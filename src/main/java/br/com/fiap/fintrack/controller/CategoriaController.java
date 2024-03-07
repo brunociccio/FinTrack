@@ -2,10 +2,13 @@ package br.com.fiap.fintrack.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,12 +46,34 @@ public class CategoriaController {
     public ResponseEntity<Categoria> show( @PathVariable Long id){
         log.info("buscando categoria com id {}", id);
 
-        for(Categoria categoria : repository) {
-            if(categoria.id().equals(id))
-                return ResponseEntity.status(200).body(categoria);
-        }
-        return ResponseEntity.status(404).build();
+        var categoriaEncontrada = getCategoriaById(id);
 
+        if(categoriaEncontrada.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(categoriaEncontrada.get());
+    }
+
+    private Optional<Categoria> getCategoriaById(Long id) {
+        var categoriaEncontrada = repository
+                                            .stream()
+                                            .filter(c -> c.id().equals(id))
+                                            .findFirst();
+        return categoriaEncontrada;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> destroy(@PathVariable Long id) {
+        log.info("Apagando categoria {}", id);
+
+        var categoriaEncontrada = getCategoriaById(id);
+
+        if(categoriaEncontrada.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        repository.remove(categoriaEncontrada.get());
+
+        return ResponseEntity.noContent().build();
     }
 
 }
