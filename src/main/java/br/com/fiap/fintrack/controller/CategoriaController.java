@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.fintrack.model.Categoria;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -76,4 +78,29 @@ public class CategoriaController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> update(
+        @PathVariable Long id,
+        @RequestBody Categoria categoria
+    ){
+        log.info("Atualizando categoria {} para {}", id, categoria);
+        // buscar categoria antiga -> 404
+        var categoriaEncontrada = getCategoriaById(id);
+        if(categoriaEncontrada.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        var categoriaAntiga = categoriaEncontrada.get();
+
+        // criar categoria nova com os dados do body
+        var categoriaNova = new Categoria(id, categoria.nome(), categoria.icone());
+
+        // remover categoria antiga
+        repository.remove(categoriaAntiga);
+
+        // adicionar categoria nova
+        repository.add(categoriaNova);
+
+        return ResponseEntity.ok(categoriaNova);
+    }
+    
 }
