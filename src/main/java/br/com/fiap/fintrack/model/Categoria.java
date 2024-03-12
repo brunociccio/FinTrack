@@ -1,14 +1,29 @@
 package br.com.fiap.fintrack.model;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.Random;
+@Getter
+@Setter
+@RequiredArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Data
+@Entity
+@AllArgsConstructor
+public class Categoria {
 
-// imutável
-public record Categoria(Long id, String nome, String icone) {
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String nome;
+    private String icone;
 
-    public Categoria(Long id, String nome, String icone) {
-        var key = (id == null) ? Math.abs (new Random().nextLong()) : id;
-        this.id = key;
-        this.nome = nome;
-        this.icone = icone;
-    }
 }
