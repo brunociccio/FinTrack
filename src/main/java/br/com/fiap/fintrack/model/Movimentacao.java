@@ -19,11 +19,11 @@ public class Movimentacao {
     @Id @GeneratedValue (strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Size(min = 3, max = 255)
+    @NotBlank(message = "{movimentacao.descricao.notblank}")
+    @Size(min = 3, max = 255, message = "{movimentancao.descricao.size}")
     private String descricao;
 
-    @Positive
+    @Positive(message = "{movimentacao.valor.positive}")
     private BigDecimal valor;
 
     @PastOrPresent
